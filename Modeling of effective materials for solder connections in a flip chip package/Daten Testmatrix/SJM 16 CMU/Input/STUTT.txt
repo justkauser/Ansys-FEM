@@ -1,0 +1,10 @@
+            
+ mp,ex,MatID,     0.17746768E+05
+ mp,PRXY,MatID,   0.29104294E+00
+ mp,ey,MatID,     0.21858703E+05
+ mp,PRYZ,MatID,   0.35853411E+00
+ mp,ez,MatID,     0.17746768E+05
+ mp,PRXZ,MatID,   0.36009482E+00
+ MP,GXZ, MatID,   0.65240923E+04
+ MP,GXY, MatID,   0.81172862E+04
+ MP,GYZ, MatID,   0.81172862E+04
