@@ -1,0 +1,39 @@
+!************************************************************************* 
+! specified variables to geometry
+
+! geometric setup of substrate region
+asu=20
+bsu=1
+dsu=20
+
+! geometric setup of chip region:
+asi=8
+bsi=675e-3
+dsi=8
+
+! geometric setup of lower pad region:
+
+bpa=35e-3 !35
+apa=250e-3 !250
+! geometric setup of upper pad region:
+apa_up=225e-3
+bpa_up=3e-3
+aipa=200e-3 !interface to pads 123.5
+
+! geometric setup of solder region:
+bso=57e-3  !57
+ab_ratio = 0.56277
+
+
+
+pitch=350e-3
+
+!constants for meshing
+ld_sb = 4 !line divs solder bump height
+ld_lp = 4 !line divs laminate pad height
+ld_sb_halo = 1 !line divs for solder ball surounding volume
+es_joint = 0.04 !esize for meshing the joint
+
+sel_pa=0e-3
+sel_pa_up=10e-3
+

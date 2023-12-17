@@ -1,0 +1,168 @@
+*if,Geometrie_Joint,EQ,'MJM',then
+
+vsel,s,mat,,ma_pb5
+eslv
+esel,r,CENT,y,0.05,0.075
+CM,SOLDER,elem
+
+
+*elseif,Geometrie_Joint,EQ,'effMJM',then
+
+alls
+vsel,s,mat,,ma_pb
+eslv
+esel,r,CENT,y,0.05,0.075
+eplot
+CM,SOLDER,elem
+
+*endif
+
+
+!********************************************************************************************************************
+! post processing
+!********************************************************************************************************************
+  fn_path   = 'OUTPUT/'
+  sim_name  = strcat(SimuProcess,'/')
+  jm_name   = strcat(Geometrie_Joint,'/')
+  geo_name  = strcat(strcat('SJM',CHRVAL(Solder_prop)),'/')
+  uf_name   = strcat(uf_material,'/')
+  file_name = 'TCT'
+  
+  fn_path = strcat(fn_path,sim_name)
+  fn_path = strcat(fn_path,jm_name)
+  fn_path = strcat(fn_path,geo_name)
+  fn_path = strcat(fn_path,uf_name)
+  fn_path = strcat(fn_path,file_name)
+  
+  fn_params = strcat('programmintern/parameters',strcounter)
+  fn_path = strcat(fn_path,CHRVAL(temps_iter(runcounter)))
+
+/post1
+
+!set,last
+
+!*****************************************************************
+set,6
+*get,time_start,active,0,set,TIME
+
+plnsol,nl,creq
+ 
+fn_path_n = fn_path
+parsav,scalar,parameters,txt
+n=1
+
+
+loadstepcount = 6   
+*del,substep_iter 
+*dim,substep_iter,array,loadstepcount
+*set,substep_iter(1),1,3,14,6,14,1
+
+
+
+*cfopen,fn_path,'txt',, 
+*vwrite, 'LS', 'nlcreq', 'Temp', 'Time'
+(T2,1x,A,T8,1x,A,T38,1x,A,T65,1x,A)
+
+
+*get,n_loadsteps,active,0,set,nset
+*do,n,1,n_loadsteps,1  ! number of load steps  
+!*do,n,1,5,1 
+
+
+    set,n  !set loadstep
+	
+
+
+*get,EC,elem,0,count  
+*del,temp_substep_ar
+*dim,temp_substep_ar,array,EC
+
+
+!vsel,s,mat,,ma_pb
+!*get,id_node,ELEM,1,NODE,1
+!*get,temp_substep,NODE,id_node,ntemp
+*vget,temp_substep_ar,NODE, 467,BFE,temp !in Ansys in der Liste der ausgewählten Elemente e Node nr ermitteln
+*set,temp_substep,temp_substep_ar(1)-T0
+*get,time_substep,active,0,set,TIME
+*set,time_substep,time_substep-time_start
+!========= SB creep =====================
+!alls
+!vsel,s,mat,,ma_pb
+!eslv
+!CM,SOLDER,elem
+
+etable,et_vol,volu          !for volu
+!etable,et_cr,nl,creq        !for acc eqv creep
+etable,et_cr,nl,creq   
+etable,et_s1,volu
+etable,et_sxy,s,xy
+etable,et_syz,s,yz
+etable,et_szx,s,xz
+etable,et_pos_x,CENT,x ! X Y Z Koordinaten des jeweiligen Elementes (undeformed)
+etable,et_pos_y,CENT,y
+etable,et_pos_z,CENT,z
+
+
+*del,SBels
+*del,ElVol
+*del,Els1
+*del,Elsxy
+*del,Elsyz
+*del,Elszx
+*del,Elposx
+*del,Elposy
+*del,Elposz
+*del,Elepcreqv
+
+*get,EC,elem,0,count                   !store elems count
+*dim,SBels,array,EC
+*dim,ElVol,array,EC                !dim array for volu => weighting the creep
+*dim,Els1,array,EC
+*dim,Elsxy,array,EC
+*dim,Elsyz,array,EC
+*dim,Elszx,array,EC
+*dim,Elposx,array,EC
+*dim,Elposy,array,EC
+*dim,Elposz,array,EC
+*dim,Elepcreqv,array,EC            !dim array for eqv creep
+
+*vget,SBels,elem,,elist                    !store sel elems nums
+*do, ii, 1, EC, 1
+     *get,ElVol(ii),elem,SBels(ii),etab,et_vol       !store volu for every stored elems
+     *get,Els1(ii),elem,SBels(ii),etab,et_s1
+     *get,Elsxy(ii),elem,SBels(ii),etab,et_sxy
+     *get,Elsyz(ii),elem,SBels(ii),etab,et_syz
+     *get,Elszx(ii),elem,SBels(ii),etab,et_szx
+	 *get,Elposx(ii),elem,SBels(ii),etab,et_pos_x
+     *get,Elposy(ii),elem,SBels(ii),etab,et_pos_y
+     *get,Elposz(ii),elem,SBels(ii),etab,et_pos_z
+     *get,Elepcreqv(ii),elem,SBels(ii),etab,et_cr    !store eqv creep for every stored elems
+*enddo
+
+vol_gesamt = 0
+creep_gesamt = 0
+
+*del,val_vol
+*dim,val_vol,array,EC  
+*del,val_vp
+*dim,val_vp,array,EC  
+*voper,val_vp,ElVol,mult,Elepcreqv !Vektorsumme aus Volumen und Creepstrain der einzelnen Elemente
+*do, ii, 1, EC, 1
+val_vol(ii) =  ElVol(ii)
+*set,vol_gesamt,vol_gesamt +  val_vol(ii)
+*set,creep_gesamt,creep_gesamt +  val_vp(ii)
+*enddo
+
+
+
+
+*set,val_nlc, creep_gesamt  / vol_gesamt ! durschschnittlicher Creepstrain über aller Elemente im Solder
+
+loadstep = chrval(n)
+
+*vwrite, loadstep, val_nlc,temp_substep, time_substep
+(T2,1x,A,T7,1x,E21.14,T38,F9.4,1x,T50,1x,F35.10)
+
+*enddo
+
+*CFCLOS

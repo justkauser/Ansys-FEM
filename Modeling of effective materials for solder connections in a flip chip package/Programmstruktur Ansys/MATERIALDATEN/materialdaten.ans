@@ -1,0 +1,136 @@
+
+!Temp consts
+T0=273.15
+T1=T0+1
+T10=T0+10
+T100=T0+100
+Troom=T0+25
+Tuf=T0+160
+Tmaxi=T0+125
+Tmini=T0-40
+
+tm=300
+t_ramp=300
+t_hold=1500
+
+IntPnts=100
+
+!---material encoding:--------------------------------------------------------
+! philosophy: each material is given a number, which is then completely immaterial to
+! the user. Materials will henceforth be referred to by one of the following connotions:
+
+mat_al=1			! underfill
+mat_eff=2			! effective material(underfill, copper & solder)
+mat_uf=3			! silicon carbide
+mat_pb=4			! solder, pbsn
+mat_Underfill=5	 	! underfill material
+mat_pc=6			! phase change mat
+mat_cu=7			! copper
+mat_fr=8			! fr4
+mat_si=9			! silicon
+mat_EPOXY=10		! Pure EPOXY
+
+mat_sb=mat_pb
+mat_lam=mat_fr
+
+
+/prep7
+
+
+! contains only material data si,puf,lam,
+! ************* Material Data Section ***************************
+!===================================================
+! UNDERFILL
+
+*if,uf_material,EQ,'CMU',then
+*use,MATERIALDATEN/mat_CMU__IBM.mac,mat_Underfill
+*elseif,uf_material,EQ,'CTU',then
+*use,MATERIALDATEN/mat_CTU.mac,mat_Underfill
+*elseif,uf_material,EQ,'PTU',then
+*use,MATERIALDATEN/mat_PTU.mac,mat_Underfill
+*endif
+!===================================================
+! Silicon: isotropic, linear elastic, not temp dep
+
+mp,ex,mat_si,165000		! elastic isotropic modulus
+mp,nuxy,mat_si,0.22			! minor poissons ratio
+mp,CTEx,mat_si,3e-6		! CTE
+
+!=================================================
+!Laminate: isotropic, elastic, T-dependent
+!for HyCo: A1a
+
+MPTEMP,     1,  T0-40, T0+25, T0+75, T0+125, Tuf				! specify T-values for mat
+MPDATA,EX,mat_lam,1,24944,24944,21936.2,17053.66667,13420.95556		        ! corresponding E
+MPDATA,EY,mat_lam,1,21202.4,21202.4,18645.77,14495.61667,11407.81222
+MPDATA,EZ,mat_lam,1,24944,24944,21936.2,17053.66667,13420.95556
+
+PR_XY=0.118
+PR_YZ=0.118
+PR_XZ=0.136
+
+MP,NUXZ,mat_lam,PR_XY
+MP,NUYZ,mat_lam,PR_YZ
+MP,NUXY,mat_lam,PR_XZ
+
+MPTEMP,     1,  T0-40, T0+25, T0+75, T0+125, Tuf				! specify T-values for mat
+MPDATA,GXZ,mat_lam,1,9332.0423,9332.0423,8206.7650,6380.1130,5021.0441		        ! corresponding E
+MPDATA,GYZ,mat_lam,1,11155.6351,11155.6351,9810.4651,7626.8634,6002.2163
+MPDATA,GXY,mat_lam,1,11155.6351,11155.6351,9810.4651,7626.8634,6002.2163
+
+MP,CTEX,mat_lam,11e-6
+MP,CTEY,mat_lam,15e-6
+MP,CTEZ,mat_lam,11e-6
+
+!===================================================
+! Via: Copper : isotropic, elastic-plastic, not temp dep
+
+mp, ctex, mat_cu, 16.5e-6 		! CTE
+!*************** multi-lineare kurve für plast. Dehnung ******************
+Em=90650
+S0=229.63
+alpha=0.331
+nm=6.25
+beta=9.54e-6
+RamOsgood-S,mat_cu,298,350,Em,S0,alpha,nm,beta,0.35,2.0
+
+!=================================================
+!=================================================
+!===================================================
+! SnAg3,8Cu0,7 mat prop
+!----------------------------------------------------
+!hier für tboptn=8
+!input constants        here: SnAg4Cu0.8
+
+! SnAg3,8Cu0,7 mat prop
+
+!----------------------------------------------------
+
+!hier für tboptn=8
+
+!input constants        here: SnAg4Cu0.8
+
+a1=277984
+
+a2=0.02447
+
+a3=6.406
+
+a4=6545.3
+
+!------------------------------------------------------
+
+MPTEMP                                                                             ! erases any preceding temp table
+
+MPTEMP,     1,  218,  538, , , , ,         ! specify T-values for mat 1
+
+MPDATA,EX,mat_sb,1,48500,33000, , , , ,         ! corresponding E-modulus
+
+MPDATA,NUXY,mat_sb,1,.36,.36, , , , ,           ! corresponding v
+
+MPDATA,CTEX,mat_sb,1,.21e-4,.21e-4, , , , ,               ! corresponding CTE
+
+TB,CREEP,mat_sb,,,8,
+
+TBDATA,1,a1,a2,a3,a4
+!===================================================

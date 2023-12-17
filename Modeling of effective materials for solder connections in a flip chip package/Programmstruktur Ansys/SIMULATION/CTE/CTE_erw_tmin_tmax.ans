@@ -1,0 +1,35 @@
+!********************************************************************************************************************
+! Load Steps: Thermal Expansion
+!********************************************************************************************************************
+
+
+
+cexp = 105            ! number of exponential steps
+mintemp = 150 !-5        ! starting temp
+maxtemp =  50		  ! end temp
+
+*dim,temps,array,cexp
+
+!fill temps vector
+ temps(1)= temps_iter(runcounter) ! Temp = Tref -> Kontrolle Displacement muss 0 werden
+*do,ii,2,cexp,1
+    temps(ii)= mintemp + (maxtemp-mintemp)*(ii-2)/(cexp-2)
+*enddo
+
+tm = 0 		! Startzeit für Lösung
+t_ramp = 1E-15 ! Zeit zum für jeden einzelnen Loadstep, da keine Zeitabhängigkeit eigentlich obsolet
+
+*do,ii,1,cexp,1	 ! Für Erwärmungsprozesse so übernommen aus der Vorlage von Dalloul
+	
+	tm=tm+t_ramp
+    allsel,all
+	bf,all,temp,T_0+temps(ii)    ! Set Thermal Loading
+	time,tm                 	! Set Ending Time for Load Step
+	deltim,t_ramp,t_ramp/100,t_ramp	        	! t_initial, t_min, t_max    !time steps needs adjustment for creep convergence
+	cutcontrol,crplimit,10,1	! 
+	outres,all,last
+solve
+    
+*enddo
+
+!=========================== end of Thermal Expansion ============================

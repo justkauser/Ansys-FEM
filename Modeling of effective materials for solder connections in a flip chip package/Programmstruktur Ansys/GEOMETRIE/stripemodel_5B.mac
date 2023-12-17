@@ -1,0 +1,193 @@
+/input,GEOMETRIE/create_unitecell,mac
+
+! create die
+asel,s,loc,y,bpa+bso+bpa_up
+vext,all,,,,bsi
+
+! create substrate
+asel,s,loc,y,0
+vext,all,,,,-bsu
+alls
+
+! generate n unite cell
+n=5
+vgen,n,all,,,pitch
+alls
+
+! create half model
+vsel,s,loc,z,pitch/2,pitch
+vdele,all,,,1
+alls
+
+vovlap,all
+vglue,all
+nummrg,kp
+alls
+
+! make group section
+
+! fr4
+vsel,s,loc,y,0,-bsu
+cm,ma_fr,volu
+vatt,mat_fr,,1
+alls
+
+! silicon
+vsel,s,loc,y,bpa+bso+bpa_up,bsi
+cm,ma_si,volu
+vatt,mat_si,,1
+alls
+
+! copper
+!vsel,s,loc,y,0,bpa
+!vsel,r,loc,x,pitch/2-apa/2,pitch/2+apa/2
+!vsel,r,loc,z,pitch/2-apa/2+sel_pa,pitch/2+apa/2-sel_pa
+vsel,s,loc,y,0,bpa
+vsel,r,loc,x,pitch/2-apa/2+sel_pa,pitch/2+apa/2-sel_pa
+vsel,r,loc,z,pitch/2-apa/2+sel_pa,pitch/2+apa/2-sel_pa
+cm,mv_lampad1,volu
+vsel,s,loc,y,0,bpa
+vsel,r,loc,x,pitch+pitch/2-apa/2+sel_pa,pitch+pitch/2+apa/2-sel_pa
+vsel,r,loc,z,pitch/2-apa/2+sel_pa,pitch/2+apa/2-sel_pa
+cm,mv_lampad2,volu
+vsel,s,loc,y,0,bpa
+vsel,r,loc,x,2*pitch+pitch/2-apa/2+sel_pa,2*pitch+pitch/2+apa/2-sel_pa
+vsel,r,loc,z,pitch/2-apa/2+sel_pa,pitch/2+apa/2-sel_pa
+cm,mv_lampad3,volu
+vsel,s,loc,y,0,bpa
+vsel,r,loc,x,3*pitch+pitch/2-apa/2+sel_pa,3*pitch+pitch/2+apa/2-sel_pa
+vsel,r,loc,z,pitch/2-apa/2+sel_pa,pitch/2+apa/2-sel_pa
+cm,mv_lampad4,volu
+vsel,s,loc,y,0,bpa
+vsel,r,loc,x,4*pitch+pitch/2-apa/2+sel_pa,4*pitch+pitch/2+apa/2-sel_pa
+vsel,r,loc,z,pitch/2-apa/2+sel_pa,pitch/2+apa/2-sel_pa
+cm,mv_lampad5,volu
+
+vsel,s,loc,y,bpa+bso,bpa+bso+bpa_up
+vsel,r,loc,x,pitch/2-apa_up/2+10e-3,pitch/2+apa_up/2-10e-3
+vsel,r,loc,z,pitch/2-apa_up/2+10e-3,pitch/2+apa_up/2-10e-3
+cm,mv_diepad1,volu
+vsel,s,loc,y,bpa+bso,bpa+bso+bpa_up
+vsel,r,loc,x,pitch+pitch/2-apa_up/2+10e-3,pitch+pitch/2+apa_up/2-10e-3
+vsel,r,loc,z,pitch/2-apa_up/2+10e-3,pitch/2+apa_up/2-10e-3
+cm,mv_diepad2,volu
+vsel,s,loc,y,bpa+bso,bpa+bso+bpa_up
+vsel,r,loc,x,2*pitch+pitch/2-apa_up/2+10e-3,2*pitch+pitch/2+apa_up/2-10e-3
+vsel,r,loc,z,pitch/2-apa_up/2+10e-3,pitch/2+apa_up/2-10e-3
+cm,mv_diepad3,volu
+vsel,s,loc,y,bpa+bso,bpa+bso+bpa_up
+vsel,r,loc,x,3*pitch+pitch/2-apa_up/2+10e-3,3*pitch+pitch/2+apa_up/2-10e-3
+vsel,r,loc,z,pitch/2-apa_up/2+10e-3,pitch/2+apa_up/2-10e-3
+cm,mv_diepad4,volu
+vsel,s,loc,y,bpa+bso,bpa+bso+bpa_up
+vsel,r,loc,x,4*pitch+pitch/2-apa_up/2+10e-3,4*pitch+pitch/2+apa_up/2-10e-3
+vsel,r,loc,z,pitch/2-apa_up/2+10e-3,pitch/2+apa_up/2-10e-3
+cm,mv_diepad5,volu
+
+vsel,s,volu,,mv_diepad1
+vsel,a,volu,,mv_diepad2
+vsel,a,volu,,mv_diepad3
+vsel,a,volu,,mv_diepad4
+vsel,a,volu,,mv_diepad5
+vsel,a,volu,,mv_lampad1
+vsel,a,volu,,mv_lampad2
+vsel,a,volu,,mv_lampad3
+vsel,a,volu,,mv_lampad4
+vsel,a,volu,,mv_lampad5
+cm,ma_cu,volu
+vatt,mat_cu,,1
+alls
+
+!select solder and assign material
+!vsel,s,loc,y,bpa,bpa+bso
+!vsel,r,loc,x,pitch/2-aipa/2*0.9,pitch/2+aipa/2*0.9
+!vsel,r,loc,z,pitch/2-aipa/2*0.9,pitch/2+aipa/2*0.9
+vsel,s,loc,y,bpa,bpa+bso
+vsel,r,loc,x,pitch/2-aipa/2*0.9,pitch/2+aipa/2*0.9
+vsel,r,loc,z,pitch/2-aipa/2*0.9,pitch/2+aipa/2*0.9
+cm,ma_pb1,volu
+vsel,s,loc,y,bpa,bpa+bso
+vsel,r,loc,x,pitch+pitch/2-aipa/2*0.9,pitch+pitch/2+aipa/2*0.9
+vsel,r,loc,z,pitch/2-aipa/2*0.9,pitch/2+aipa/2*0.9
+cm,ma_pb2,volu
+vsel,s,loc,y,bpa,bpa+bso
+vsel,r,loc,x,2*pitch+pitch/2-aipa/2*0.9,2*pitch+pitch/2+aipa/2*0.9
+vsel,r,loc,z,pitch/2-aipa/2*0.9,pitch/2+aipa/2*0.9
+cm,ma_pb3,volu
+vsel,s,loc,y,bpa,bpa+bso
+vsel,r,loc,x,3*pitch+pitch/2-aipa/2*0.9,3*pitch+pitch/2+aipa/2*0.9
+vsel,r,loc,z,pitch/2-aipa/2*0.9,pitch/2+aipa/2*0.9
+cm,ma_pb4,volu
+vsel,s,loc,y,bpa,bpa+bso
+vsel,r,loc,x,4*pitch+pitch/2-aipa/2*0.9,4*pitch+pitch/2+aipa/2*0.9
+vsel,r,loc,z,pitch/2-aipa/2*0.9,pitch/2+aipa/2*0.9
+cm,ma_pb5,volu
+
+vsel,s,volu,,ma_pb1
+vsel,a,volu,,ma_pb2
+vsel,a,volu,,ma_pb3
+vsel,a,volu,,ma_pb4
+vsel,a,volu,,ma_pb5
+cm,ma_pb,volu
+vatt,mat_pb,,1
+alls
+
+! underfill
+vsel,u,volu,,ma_cu
+vsel,u,volu,,ma_pb
+vsel,u,volu,,ma_fr
+vsel,u,volu,,ma_si
+cm,ma_uf,volu
+vatt,mat_Underfill,,1
+alls
+
+! plot materials coloured
+/number,1
+/pnum,mat,1
+!========================================================================
+! define mesh
+
+lsel,s,loc,y,bpa,bpa+bso
+lsel,u,loc,y,bpa
+lsel,u,loc,y,bpa+bso
+lesize,all,,,ld_sb
+alls
+lsel,s,length,,bpa
+lesize,all,,,ld_lp
+alls
+lsel,s,length,,(apa_up-aipa)/2
+lesize,all,,,ld_sb_halo
+alls
+lsel,s,length,,bsu
+lesize,all,,,5,5
+alls
+lsel,s,length,,bsi
+lesize,all,,,5,5
+alls
+
+*if,apa,EQ,apa_up,then
+lsel,s,length,,(pitch-apa_up)/4
+lesize,all,,,2
+alls
+lsel,s,length,,aipa/2
+lesize,all,,,6
+alls
+*endif
+
+! move to mirror the stripemodell
+vgen,2,all,,,5*pitch,0,0,,,1
+!---------------------------------------------------------
+! meshing
+
+vsel,s,volu,,ma_pb
+vsel,a,volu,,ma_cu
+vsel,a,volu,,ma_uf
+vsel,a,volu,,ma_fr
+vsel,a,volu,,ma_si
+
+es_joint = 0.04 !esize for meshing the joint
+esize, es_joint
+mshape,0,3d		! hex
+mshkey,1		! mapped
+vmesh,all
+alls

@@ -1,0 +1,66 @@
+! DEFINE STRESS STRAIN CURVE IN MKIN-Table BY USING RAMBERG-OSGOOD-Law
+! calculate and define STRESS-STRAIN-CURVE (total) max 40 temperatures & 20 pairs per temp 
+! use in /PREP7
+
+! ARGUMENTS OF THE MACRO
+!************************
+MatID 	= ARG1			! Material Number
+T	= ARG2			! Temperature
+Smax	= ARG3			! max Stress to calculate strain
+E	= ARG4			! E-Modulus
+Sigma_0 = ARG5
+alpha	= ARG6			! Constant
+n	= ARG7			! Constant
+betar	= ARG8
+PR	= ARG9			! Poisson Ratio
+SPACE	= AR10			! Spacing Ratio or Zone Limit
+!************************
+
+
+MPTEMP,,,,,,,,  
+MPTEMP,1,T  
+MPDATA,EX,MatID,,E	  	  	! E-Modulus
+MPDATA,PRXY,MatID,,PR			! Poisson Ratio 
+
+*DIM,SSC,,20,2				! define Array of 20x2
+TB,KINH,MatID,1,20      		! Activate a data table
+TBTEMP,T,1	                        ! Temperature
+ 
+
+
+SIGMA = (1**SPACE/20**SPACE)*Smax
+SSC(1,1) = (SIGMA/E)
+SSC(1,2) = SIGMA
+TBPT,,SSC(1,1),SSC(1,2) 
+
+
+
+*DO,I,2,20,1
+  
+  
+  
+  
+  SIGMA = (I**SPACE/20**SPACE)*Smax	! I²-Spacing Ratio
+  
+  
+  !SIGMA = (I)*Smax/20	! equidistant Spacing
+
+  !SIGMA = Smax/(20-I+1)  ! biased spacing
+  
+  
+  !***********************************************************
+  !*IF,I,LE,15,THEN
+  !  SIGMA = I*SPACE/15			! equidistant zone 1
+  !  *ELSE
+  !    SIGMA = SPACE+(I-15)*(Smax-SPACE)/5 ! equidistant zone 2
+  !*ENDIF
+  !***********************************************************
+  
+  
+  
+  
+  
+  SSC(I,1) = (SIGMA/E)+(alpha*(Sigma_0/E)*((SIGMA/Sigma_0)**n)+SIGMA*betar)
+  SSC(I,2) = SIGMA
+  TBPT,,SSC(I,1),SSC(I,2) 		! strain,stress
+*ENDDO

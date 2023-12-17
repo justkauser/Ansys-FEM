@@ -1,0 +1,13 @@
+alls
+nsel,s,loc,y,-bsu
+nsel,r,loc,x,0
+nsel,r,loc,z,0
+d,all,uy,0
+
+nsel,s,loc,x,5*pitch
+dsym,symm,x
+
+nsel,s,loc,z,pitch/2
+dsym,symm,z
+
+alls

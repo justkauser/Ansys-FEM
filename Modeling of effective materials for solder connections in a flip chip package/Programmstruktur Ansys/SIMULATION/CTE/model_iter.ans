@@ -1,0 +1,62 @@
+!*************************************************************
+fini
+
+
+
+!*************************************************************************
+! specified variables to geometry
+
+
+
+T_0=273.15
+T_RT=T_0+25
+
+
+
+
+/input,GEOMETRIE/unitecell,mac
+
+! geometric setup 
+a_c = pitch
+b_c = bpa + bso + bpa_up
+d_c = pitch
+
+/solu
+
+/input,GEOMETRIE/BC_SJM,ans
+
+
+
+!********************************************************************************************************************
+!-- specify type of solution:
+!********************************************************************************************************************
+alls
+! Set initial conditions:
+toffst,0
+tref,T_0+temps_iter(runcounter)
+
+! set solution characteristics
+nlgeom,off ! Nichtlinerität aus
+autots,off ! Keine automatisch gesetzten Zeitschritte
+rate,off   ! Zeitabhängigkeit aus -> Viskoelastisches Verhalten AUS
+timint,off ! Transiente Effekte aus
+nropt,full ! explicitly set the Newton-Raphson option
+kbc,1		! Rampenmodus für Last AUS (=1)
+
+!********************************************************************************************************************
+! specify output written to file.rst
+!********************************************************************************************************************
+
+outres,nsol,last
+outres,esol,last
+
+!********************************************************************************************************************
+! Load Steps: Thermal Expansion
+!********************************************************************************************************************
+
+/input,SIMULATION/CTE/CTE_dyn_Tref,ans 
+
+save
+finish
+
+

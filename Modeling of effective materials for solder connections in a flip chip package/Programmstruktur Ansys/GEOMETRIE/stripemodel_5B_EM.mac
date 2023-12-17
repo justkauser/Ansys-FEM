@@ -1,0 +1,190 @@
+/input,GEOMETRIE/create_unitecell,mac
+alls
+
+! move unite cell
+vgen,2,all,,,4*pitch,0,0,,,1
+
+
+! create effective
+block,0,4*pitch,0,bpa+bso+bpa_up,0,pitch
+
+! create die
+!block,0,5*pitch,bpa+bso+bpa_up,bpa+bso+bpa_up+bsi,0,pitch
+
+asel,s,loc,y,bpa+bso+bpa_up
+vext,all,,,,bsi
+
+
+! create substrate
+!block,0,5*pitch,0,-bsu,0,pitch
+
+asel,s,loc,y,0
+vext,all,,,,-bsu
+alls
+
+
+
+! create lines for mishing
+wplane,-1,0,bpa,0,0,bpa,pitch,10*pitch,bpa,pitch
+vsbw,all
+alls
+wplane,-1,0,bpa+bso,0,0,bpa+bso,pitch,10*pitch,bpa+bso,pitch
+vsbw,all
+alls
+wplane,-1,0,0,pitch/2,0,bsi,pitch/2,10*pitch,bsi,pitch/2
+vsbw,all
+alls
+
+! create lines for devideng unite cells
+wplane,-1,pitch,bsi,0,pitch,bsi,pitch,pitch,bsu,pitch
+vsbw,all
+alls
+wplane,-1,2*pitch,bsi,0,2*pitch,bsi,pitch,2*pitch,bsu,pitch
+vsbw,all
+alls
+wplane,-1,3*pitch,bsi,0,3*pitch,bsi,pitch,3*pitch,bsu,pitch
+vsbw,all
+alls
+wplane,-1,4*pitch,bsi,0,4*pitch,bsi,pitch,4*pitch,bsu,pitch
+vsbw,all
+alls
+wplane,-1,5*pitch,bsi,0,5*pitch,bsi,pitch,5*pitch,bsu,pitch
+vsbw,all
+alls
+wplane,-1,6*pitch,bsi,0,6*pitch,bsi,pitch,6*pitch,bsu,pitch
+vsbw,all
+alls
+wplane,-1,7*pitch,bsi,0,7*pitch,bsi,pitch,7*pitch,bsu,pitch
+vsbw,all
+alls
+wplane,-1,8*pitch,bsi,0,8*pitch,bsi,pitch,8*pitch,bsu,pitch
+vsbw,all
+alls
+
+wpcsys,0
+
+! create half model
+vsel,s,loc,z,pitch/2,pitch
+vdele,all,,,1
+alls
+
+
+vovlap,all
+vglue,all
+nummrg,kp
+!======================================================
+! make group section
+
+! fr4
+vsel,s,loc,y,0,-bsu
+cm,ma_fr,volu
+vatt,mat_fr,,1
+alls
+
+! silicon
+vsel,s,loc,y,bpa+bso+bpa_up,bsi
+cm,ma_si,volu
+vatt,mat_si,,1
+alls
+
+! copper
+vsel,s,loc,y,0,bpa
+vsel,r,loc,x,4*pitch+pitch/2-apa/2+sel_pa,4*pitch+pitch/2+apa/2-sel_pa
+vsel,r,loc,z,pitch/2-apa/2+sel_pa,pitch/2+apa/2-sel_pa
+cm,mv_lampad,volu
+
+vsel,s,loc,y,bpa+bso,bpa+bso+bpa_up
+vsel,r,loc,x,4*pitch+pitch/2-apa_up/2+10e-3,4*pitch+pitch/2+apa_up/2-10e-3
+vsel,r,loc,z,pitch/2-apa_up/2+10e-3,pitch/2+apa_up/2-10e-3
+cm,mv_diepad,volu
+
+vsel,s,volu,,mv_diepad
+vsel,a,volu,,mv_lampad
+cm,ma_cu,volu
+vatt,mat_cu,,1
+alls
+
+!select solder and assign material
+vsel,s,loc,y,bpa,bpa+bso
+vsel,r,loc,x,4*pitch+pitch/2-aipa/2*0.9,4*pitch+pitch/2+aipa/2*0.9
+vsel,r,loc,z,pitch/2-aipa/2*0.9,pitch/2+aipa/2*0.9
+cm,ma_pb,volu
+vatt,mat_pb,,1
+alls
+
+! underfill
+vsel,s,loc,y,0,bpa+bso+bpa_up
+vsel,r,loc,x,4*pitch,5*pitch
+vsel,u,volu,,ma_cu
+vsel,u,volu,,ma_pb
+vsel,u,volu,,ma_fr
+vsel,u,volu,,ma_si
+cm,ma_uf,volu
+vatt,mat_Underfill,,1
+alls
+
+! effective
+vsel,s,loc,y,0,bpa+bso+bpa_up
+vsel,r,loc,x,0,4*pitch
+cm,ma_eff,volu
+vatt,mat_eff,,1
+alls
+
+! unite cells
+vsel,s,loc,x,4*pitch,5*pitch
+cm,unite_cells,volu
+alls
+
+! plot materials coloured
+/number,1
+/pnum,mat,1
+
+
+!========================================================================
+! define mesh
+
+lsel,s,loc,y,bpa,bpa+bso
+lsel,u,loc,y,bpa
+lsel,u,loc,y,bpa+bso
+lesize,all,,,ld_sb
+alls
+lsel,s,length,,bpa
+lesize,all,,,ld_lp
+alls
+lsel,s,length,,(apa_up-aipa)/2
+lesize,all,,,ld_sb_halo
+alls
+lsel,s,length,,bsu
+lesize,all,,,5,5
+alls
+lsel,s,length,,bsi
+lesize,all,,,5,5
+alls
+
+*if,apa,EQ,apa_up,then
+lsel,s,length,,(pitch-apa_up)/4
+lesize,all,,,2
+alls
+lsel,s,length,,aipa/2
+lesize,all,,,6
+alls
+*endif
+
+! move to mirror the stripemodell
+vgen,2,all,,,5*pitch,0,0,,,1
+!---------------------------------------------------------
+! meshing
+vsel,s,volu,,ma_eff
+vsel,a,volu,,ma_pb
+vsel,a,volu,,ma_cu
+vsel,a,volu,,ma_uf
+vsel,a,volu,,ma_fr
+vsel,a,volu,,ma_si
+
+es_joint = 0.04 !esize for meshing the joint
+esize, es_joint
+mshape,0,3d		! hex
+mshkey,1		! mapped
+vmesh,all
+alls
+

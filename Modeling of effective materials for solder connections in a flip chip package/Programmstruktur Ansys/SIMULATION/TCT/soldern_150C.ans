@@ -1,0 +1,112 @@
+
+T0=273.15
+T1=T0+1
+T10=T0+10
+T100=T0+100
+Troom=T0+25
+Tuf=T0+150
+Tmaxi=T0+125
+Tmini=T0-40
+loadstepcounter = 0
+tm=0
+t_ramp=300
+t_hold=1500
+
+
+cooltime_soldering = 300
+relaxtime_soldering = 1000
+
+!Soldern:
+
+! Set initial conditions: Um sicherzugehen, dass wirklich von 150°C abgekühlt wird.
+
+toffst,0
+tref,T0+150
+tunif,T0+150
+! -----------------------------------------------------------
+! set solution characteristics
+
+autots,on
+rate,on
+timint,off
+
+! -----------------------------------------------------------
+! specify output written to file.rst
+
+outres,nsol,all
+outres,esol,all
+
+
+! ***********************************************************
+! Load Steps:
+
+! -----------------------------------------------------------
+
+
+
+
+nropt,full   		! explicitly set the Newton-Raphson option
+
+alls
+
+kbc,0			! use ramp mode for load application
+
+nsel,all		! select all nodes:
+! ***********************************************************
+! -- Start: 150°C - 0.1s
+
+!*set,tm,tm + 0
+allsel,all
+bf,all,temp,T0+150     ! Set Thermal Loading
+time,0.1                ! Set Ending Time for Load Step
+deltim,ats,ats/10,30*ats       ! t_initial, t_min, t_max    !time steps needs adjustment for creep convergence
+cutcontrol,crplimit,var_cl,1
+outres,all,last
+solve
+*set,loadstepcounter,loadstepcounter+1
+
+! ***********************************************************
+! ***********************************************************
+! -- 300s Abkühlen 
+
+!von 150°C -> 96 °C
+! cool down to room T
+*set,tm,tm + cooltime_soldering*(150.0-96.0)/125.0
+allsel,all
+bf,all,temp,T0+96     ! Set Thermal Loading
+time,tm                 ! Set Ending Time for Load Step
+deltim,ats,ats/10,30*ats       ! t_initial, t_min, t_max    !time steps needs adjustment for creep convergence
+cutcontrol,crplimit,var_cl,1
+outres,all,last
+solve
+*set,loadstepcounter,loadstepcounter+1
+
+! ***********************************************************
+
+!/input,COMPARE/set_EM_above96,ans 
+!von 96°C -> 25 °C
+! cool down to room T
+*set,tm,tm + cooltime_soldering*(96.0-25.0)/125.0
+allsel,all
+bf,all,temp,T0+25     ! Set Thermal Loading
+time,tm                 ! Set Ending Time for Load Step
+deltim,ats,ats/10,30*ats       ! t_initial, t_min, t_max    !time steps needs adjustment for creep convergence
+cutcontrol,crplimit,var_cl,1
+outres,all,last
+solve
+*set,loadstepcounter,loadstepcounter+1
+!/input,COMPARE/set_EM_above25,ans 
+! ***********************************************************
+! -- 1000s Relaxieren bei 25 °C
+! relaxing @ room T
+
+*set,tm,tm + relaxtime_soldering
+allsel,all
+bf,all,temp,T0+25     ! Set Thermal Loading
+time,tm                 ! Set Ending Time for Load Step
+deltim,ats,ats/10,30*ats       ! t_initial, t_min, t_max    !time steps needs adjustment for creep convergence
+cutcontrol,crplimit,var_cl,1
+outres,all,last
+solve
+*set,loadstepcounter,loadstepcounter+1
+

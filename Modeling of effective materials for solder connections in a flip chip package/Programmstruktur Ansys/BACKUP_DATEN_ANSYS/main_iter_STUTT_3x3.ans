@@ -1,0 +1,200 @@
+!*************************************************************
+fini
+ /clear,start
+
+
+
+
+!************************************************************
+alls			! selects all entities for display
+save			! saves it all
+!************************************************************
+finish			! end of program
+ /clear,start
+ 
+uf_material = 'CMU' 	!Zur Auswahl stehen: CMU|CTU|PTU
+Geometrie_Joint = 'SJM'		!Zur Auswahl stehen: SJM | MJM | effMJM
+Solder_prop = 7 			!Zur Auswahl stehen: 7 | 18 | 26
+SimuProcess = 'STUTT'		!Zur Auswahl stehen: Static Uniaxial Tensile Test (STUTT)| Static CTE-Test (CTE) | Creep test at SJM (Creep) | Benchmark Test: TCT MJM vs. effMJM (TCT) | Show Meshing (Mesh)
+
+
+/input,SIMULATION/ini_simulation,ans  !init program
+
+
+
+
+
+!************************************************************
+alls			! selects all entities for display
+save			! saves it all
+!************************************************************
+finish			! end of program
+
+/clear,start
+ 
+uf_material = 'CMU' 	!Zur Auswahl stehen: CMU|CTU|PTU
+Geometrie_Joint = 'SJM'		!Zur Auswahl stehen: SJM | MJM | effMJM
+Solder_prop = 18 			!Zur Auswahl stehen: 7 | 18 | 26
+SimuProcess = 'STUTT'		!Zur Auswahl stehen: Static Uniaxial Tensile Test (STUTT)| Static CTE-Test (CTE) | Creep test at SJM (Creep) | Benchmark Test: TCT MJM vs. effMJM (TCT) | Show Meshing (Mesh)
+
+
+/input,SIMULATION/ini_simulation,ans  !init program
+
+
+
+
+
+
+!************************************************************
+alls			! selects all entities for display
+save			! saves it all
+!************************************************************
+finish			! end of program
+
+
+/clear,start
+ 
+uf_material = 'CMU' 	!Zur Auswahl stehen: CMU|CTU|PTU
+Geometrie_Joint = 'SJM'		!Zur Auswahl stehen: SJM | MJM | effMJM
+Solder_prop = 26 			!Zur Auswahl stehen: 7 | 18 | 26
+SimuProcess = 'STUTT'		!Zur Auswahl stehen: Static Uniaxial Tensile Test (STUTT)| Static CTE-Test (CTE) | Creep test at SJM (Creep) | Benchmark Test: TCT MJM vs. effMJM (TCT) | Show Meshing (Mesh)
+
+
+/input,SIMULATION/ini_simulation,ans  !init program
+
+
+
+
+
+
+!************************************************************
+alls			! selects all entities for display
+save			! saves it all
+!************************************************************
+finish			! end of program
+
+ /clear,start
+ 
+uf_material = 'CTU' 	!Zur Auswahl stehen: CMU|CTU|PTU
+Geometrie_Joint = 'SJM'		!Zur Auswahl stehen: SJM | MJM | effMJM
+Solder_prop = 7 			!Zur Auswahl stehen: 7 | 18 | 26
+SimuProcess = 'STUTT'		!Zur Auswahl stehen: Static Uniaxial Tensile Test (STUTT)| Static CTE-Test (CTE) | Creep test at SJM (Creep) | Benchmark Test: TCT MJM vs. effMJM (TCT) | Show Meshing (Mesh)
+
+
+/input,SIMULATION/ini_simulation,ans  !init program
+
+
+
+
+
+!************************************************************
+alls			! selects all entities for display
+save			! saves it all
+!************************************************************
+finish			! end of program
+
+/clear,start
+ 
+uf_material = 'CTU' 	!Zur Auswahl stehen: CMU|CTU|PTU
+Geometrie_Joint = 'SJM'		!Zur Auswahl stehen: SJM | MJM | effMJM
+Solder_prop = 18 			!Zur Auswahl stehen: 7 | 18 | 26
+SimuProcess = 'STUTT'		!Zur Auswahl stehen: Static Uniaxial Tensile Test (STUTT)| Static CTE-Test (CTE) | Creep test at SJM (Creep) | Benchmark Test: TCT MJM vs. effMJM (TCT) | Show Meshing (Mesh)
+
+
+/input,SIMULATION/ini_simulation,ans  !init program
+
+
+
+
+
+
+!************************************************************
+alls			! selects all entities for display
+save			! saves it all
+!************************************************************
+finish			! end of program
+
+
+/clear,start
+ 
+uf_material = 'CTU' 	!Zur Auswahl stehen: CMU|CTU|PTU
+Geometrie_Joint = 'SJM'		!Zur Auswahl stehen: SJM | MJM | effMJM
+Solder_prop = 26 			!Zur Auswahl stehen: 7 | 18 | 26
+SimuProcess = 'STUTT'		!Zur Auswahl stehen: Static Uniaxial Tensile Test (STUTT)| Static CTE-Test (CTE) | Creep test at SJM (Creep) | Benchmark Test: TCT MJM vs. effMJM (TCT) | Show Meshing (Mesh)
+
+
+/input,SIMULATION/ini_simulation,ans  !init program
+
+
+
+
+
+
+!************************************************************
+alls			! selects all entities for display
+save			! saves it all
+!************************************************************
+finish			! end of program
+
+ /clear,start
+ 
+uf_material = 'PTU' 	!Zur Auswahl stehen: CMU|CTU|PTU
+Geometrie_Joint = 'SJM'		!Zur Auswahl stehen: SJM | MJM | effMJM
+Solder_prop = 7 			!Zur Auswahl stehen: 7 | 18 | 26
+SimuProcess = 'STUTT'		!Zur Auswahl stehen: Static Uniaxial Tensile Test (STUTT)| Static CTE-Test (CTE) | Creep test at SJM (Creep) | Benchmark Test: TCT MJM vs. effMJM (TCT) | Show Meshing (Mesh)
+
+
+/input,SIMULATION/ini_simulation,ans  !init program
+
+
+
+
+
+!************************************************************
+alls			! selects all entities for display
+save			! saves it all
+!************************************************************
+finish			! end of program
+
+/clear,start
+ 
+uf_material = 'PTU' 	!Zur Auswahl stehen: CMU|CTU|PTU
+Geometrie_Joint = 'SJM'		!Zur Auswahl stehen: SJM | MJM | effMJM
+Solder_prop = 18 			!Zur Auswahl stehen: 7 | 18 | 26
+SimuProcess = 'STUTT'		!Zur Auswahl stehen: Static Uniaxial Tensile Test (STUTT)| Static CTE-Test (CTE) | Creep test at SJM (Creep) | Benchmark Test: TCT MJM vs. effMJM (TCT) | Show Meshing (Mesh)
+
+
+/input,SIMULATION/ini_simulation,ans  !init program
+
+
+
+
+
+
+!************************************************************
+alls			! selects all entities for display
+save			! saves it all
+!************************************************************
+finish			! end of program
+
+
+/clear,start
+ 
+uf_material = 'PTU' 	!Zur Auswahl stehen: CMU|CTU|PTU
+Geometrie_Joint = 'SJM'		!Zur Auswahl stehen: SJM | MJM | effMJM
+Solder_prop = 26 			!Zur Auswahl stehen: 7 | 18 | 26
+SimuProcess = 'STUTT'		!Zur Auswahl stehen: Static Uniaxial Tensile Test (STUTT)| Static CTE-Test (CTE) | Creep test at SJM (Creep) | Benchmark Test: TCT MJM vs. effMJM (TCT) | Show Meshing (Mesh)
+
+
+/input,SIMULATION/ini_simulation,ans  !init program
+
+
+
+
+
+
+!************************************************************
+alls			! selects all entities for display
+save			! saves it all
+!************************************************************
+finish			! end of program

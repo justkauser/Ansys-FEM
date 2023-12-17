@@ -1,0 +1,139 @@
+*if,Solder_prop,EQ,7,then
+/input,GEOMETRIE/geometrieparameter_SJM7,ans
+*elseif,Solder_prop,EQ,18,then
+/input,GEOMETRIE/geometrieparameter_SJM18,ans
+*elseif,Solder_prop,EQ,26,then
+/input,GEOMETRIE/geometrieparameter_SJM26,ans
+*endif
+
+
+/input,MATERIALDATEN/materialdaten,ans  
+
+!********************************************************************************************************************
+!ERSTELLEN DER GEOMETRIE
+!********************************************************************************************************************
+!--- creation of solids---
+
+!============== setting element type ==========================
+! element type definition for element number 1
+et,1,solid186
+
+!KeyPs for SB layer
+csys,0
+K,1,aipa/2,bpa+bso
+K,2,aipa/2,bpa
+K,3,0,bpa
+K,4,0,bpa+bso
+
+*if,apa,NE,apa_up,then
+
+K,5,apa_up/2,bpa+bso
+K,6,apa_up/2,bpa
+K,7,apa/2,bpa+bso
+K,8,apa/2,bpa
+a,6,5,7,8
+
+!SB arc
+LOCAL,11,1,0,bso/2+bpa,0,,,,ab_ratio   !Wechseln in zylindrisches KOS entlang Z-Achse, Mittelpunkt (0, Mitte Höhe des Lötballs, 0)
+CSYS,11								! Speichern des KOS in 11
+L,1,2								! Linie zwischen Punkt 1 und 2 im ZKS -> Kreissegment mit Mittelpunkt (0, Mitte Höhe des Lötballs, 0)
+csys,0			! goto cartesian
+
+
+a,1,2,3,4
+a,1,2,6,5
+
+!lower Pad (PCB): Cu
+blc4,0,0,aipa/2,bpa					! Erstellen von Flächen mittels Block Befehl und Länge in Z-Richtung 0
+blc4,aipa/2,0,(apa_up-aipa)/2,bpa
+blc4,apa_up/2,0,(apa-apa_up)/2,bpa
+alls
+
+!upper Pad (die): Cu
+blc4,0,bpa+bso,aipa/2,bpa_up
+blc4,aipa/2,bpa+bso,(apa_up-aipa)/2,bpa_up
+blc4,apa_up/2,bpa+bso,(apa-apa_up)/2,bpa_up
+
+*else
+
+
+
+K,5,apa/2,bpa+bso
+K,6,apa/2,bpa
+K,7,apa/2+(pitch-apa_up)/4,bpa+bso
+K,8,apa/2+(pitch-apa_up)/4,bpa
+
+
+
+!SB arc
+LOCAL,11,1,0,bso/2+bpa,0,,,,ab_ratio   !Wechseln in zylindrisches KOS entlang Z-Achse, Mittelpunkt (0, Mitte Höhe des Lötballs, 0)
+CSYS,11								! Speichern des KOS in 11
+L,1,2								! Linie zwischen Punkt 1 und 2 im ZKS -> Kreissegment mit Mittelpunkt (0, Mitte Höhe des Lötballs, 0)
+L,5,6
+csys,0			! goto cartesian
+
+
+a,1,2,3,4
+a,1,2,6,5
+a,6,5,7,8
+
+!lower Pad (PCB): Cu
+blc4,0,0,aipa/2,bpa					! Erstellen von Flächen mittels Block Befehl und Länge in Z-Richtung 0
+blc4,aipa/2,0,(apa_up-aipa)/2,bpa
+blc4,apa_up/2,0,(pitch-apa_up)/4,bpa
+
+alls
+
+!upper Pad (die): Cu
+blc4,0,bpa+bso,aipa/2,bpa_up
+blc4,aipa/2,bpa+bso,(apa_up-aipa)/2,bpa_up
+blc4,apa_up/2,bpa+bso,(pitch-apa_up)/4,bpa_up
+
+
+*endif
+
+
+
+
+alls
+
+! Resultat: Vorlage für Lötball und die beiden Kupferpads als Flächen in der X-Y-Ebene, diese müssen nun um 360 Grad um die Y-Achse rotiert werden
+
+! create 3D SB
+vrotat,all,,,,,,3,4     ! Rotieren von allen Flächen um 360 Grad, 3 und 4 sind die Keypoints, die die Rotationsachse definieren
+alls
+vglue,all   ! alle neu entstandenen Keypunkte zusammenfügen 
+nummrg,kp	! alle Keypunkte automatisch neu definieren
+
+
+! move SB
+vgen,2,all,,,pitch/2,0,pitch/2,,,1
+
+
+! create underfill
+block,0,pitch,0,bpa+bso+bpa_up,0,pitch
+
+
+! create lines for mishing
+wplane,-1,0,0,pitch/2,pitch,0,pitch/2,0,bpa+bso+bpa_up,pitch/2
+vsbw,all
+alls
+wplane,-1,pitch/2,0,0,pitch/2,0,pitch,pitch/2,bpa+bso+bpa_up,0
+vsbw,all
+alls
+wplane,-1,0,0,pitch,pitch,0,0,0,bpa+bso+bpa_up,pitch
+vsbw,all
+alls
+wplane,-1,0,0,0,pitch,0,pitch,0,bpa+bso+bpa_up,0
+vsbw,all
+alls
+
+!cut Pad-Solder IFs 
+wplane,-1,0,bpa,0,pitch,bpa,0,0,bpa,pitch
+vsbw,all
+alls
+wplane,-1,0,bpa+bso,0,pitch,bpa+bso,0,0,bpa+bso,pitch
+vsbw,all
+alls
+
+wpcsys,0

@@ -1,0 +1,104 @@
+
+T0=273.15
+T1=T0+1
+T10=T0+10
+T100=T0+100
+Troom=T0+25
+Tuf=T0+150
+ats = 10
+
+
+Tmax=T0+125
+Tmin=T0-40
+
+
+ramp_time=30 ! 10 min 30s transfer time
+dwell_time=29.5*60 !30min -  transfer time
+*set,ramp_time_up,18.1818181818 	!ramp_time *(Tmax - Troom) / (Tmax - Tmin)
+*set,ramp_time_down,11.8181818181 	!ramp_time *(Troom - Tmin) / (Tmax - Tmin)
+
+n_cycles = 3 ! Zahl der thermischen Zyklen
+
+!/input,COMPARE/set_EM_above25,ans 
+
+*do,ii,1,n_cycles,1
+
+!/input,COMPARE/set_EM_above25,ans 
+!=========================== ! Thermal cycle: ============================
+! Load Step 1: 1st cycle  T= 25°C --> 125°C
+*do,ii2,1,20,1
+rt_up = ramp_time_up/20
+*set,tm,tm  + rt_up
+allsel,all
+temp_neu = Troom + (Tmax - Troom)*ii2/20
+bf,all,temp,temp_neu     ! Set Thermal Loading
+time,tm                 ! Set Ending Time for Load Step
+deltim,ats,ats/10,30*ats       ! t_initial, t_min, t_max    !time steps needs adjustment for creep convergence
+cutcontrol,crplimit,var_cl,1
+outres,all,last
+solve
+*set,loadstepcounter,loadstepcounter+1
+*enddo
+
+
+!/input,COMPARE/set_EM_125,ans 
+! Load Step 2: 1st cycle t=29.5 min, T= 125°C
+*set,tm,tm + dwell_time
+allsel,all
+bf,all,temp,Tmax       ! Set Thermal Loading
+time,tm                 ! Set Ending Time for Load Step
+deltim,ats,ats/10,30*ats       ! t_initial, t_min, t_max    !time steps needs adjustment for creep convergence
+cutcontrol,crplimit,var_cl,1
+outres,all,last
+solve
+*set,loadstepcounter,loadstepcounter+1
+
+
+
+! Load Step 3: 1st cycle t=30s, T= 125°C --> -40°C 
+*do,ii2,1,30,1
+rt = ramp_time/30
+*set,tm,tm  + rt
+allsel,all
+temp_neu = Tmax + (Tmin - Tmax)*ii2/30
+bf,all,temp,temp_neu      ! Set Thermal Loading
+time,tm                 ! Set Ending Time for Load Step
+deltim,ats,ats/10,30*ats       ! t_initial, t_min, t_max    !time steps needs adjustment for creep convergence
+cutcontrol,crplimit,var_cl,1
+outres,all,last
+solve
+*set,loadstepcounter,loadstepcounter+1
+*enddo
+
+
+
+! Load Step 4: 1st cycle t=29.5 min, T= -40°C
+*set,tm,tm +dwell_time
+allsel,all
+bf,all,temp,Tmin       ! Set Thermal Loading
+time,tm                 ! Set Ending Time for Load Step
+deltim,ats,ats/10,30*ats       ! t_initial, t_min, t_max    !time steps needs adjustment for creep convergence
+cutcontrol,crplimit,var_cl,1
+outres,all,last
+solve
+*set,loadstepcounter,loadstepcounter+1
+
+
+
+! Load Step 5: 1st cycle t=400s, T= -40°C --> 25°C
+*do,ii2,1,10,1
+rt = ramp_time_down/10
+*set,tm,tm  + rt
+ allsel,all
+temp_neu = Tmin + (Troom - Tmin)*ii2/10
+bf,all,temp,temp_neu      ! Set Thermal Loading      
+ time,tm                 ! Set Ending Time for Load Step
+ deltim,ats,ats/10,30*ats       ! t_initial, t_min, t_max    !time steps needs adjustment for creep convergence
+cutcontrol,crplimit,var_cl,1
+ outres,all,last
+ solve
+*set,loadstepcounter,loadstepcounter+1
+ 
+ *enddo
+ *enddo
+!=========================== end of cycle ============================

@@ -1,0 +1,94 @@
+finish
+
+f_dir = 'z'
+!*************************************************************************
+! specified variables to geometry
+
+
+T_0=273.15
+T_RT=T_0+25
+
+
+
+/input,GEOMETRIE/unitecell,mac
+
+! geometric setup 
+a_c = pitch
+b_c = bpa + bso + bpa_up
+d_c = pitch
+
+/solu
+
+/input,GEOMETRIE/BC_SJM,ans
+
+!/eof
+
+! --------------------------------------------------------
+!-- specify type of solution:
+
+antype,static,new	! static solution for new analysis
+
+! -----------------------------------------------------------
+! Set initial conditions:
+
+toffst,0
+
+! uzs
+  !tref,Tref_Poly
+  !tunif,Tref_Poly
+  tref,T_0+temps_iter(runcounter)
+! uzs
+  
+! -----------------------------------------------------------
+! set solution characteristics
+nlgeom,on
+autots,on
+rate,on
+timint,off
+! -----------------------------------------------------------
+! specify output written to file.rst
+
+outres,nsol,last
+outres,esol,last
+
+nropt,full   		! explicitly set the Newton-Raphson option
+
+alls
+kbc,1		! use NO ramp mode for load application
+! ***********************************************************
+! Load Steps:
+
+! load:
+nsel,s,loc,z,d_c
+sf,all,pres,10        ! force
+
+cexp = 31             ! number of exponential steps
+minexp = -15         ! starting exponent
+*dim,times,array,cexp
+
+!fill times vector
+*do,ii,1,cexp,1
+    times(ii)=10**(minexp-1+ii)
+*enddo
+
+laststop = 0 !end time or previous step
+*do,ii,1,cexp,1
+    alls
+    ats = times(ii)-laststop
+    time,times(ii)
+    deltim,ats,ats/1000,ats/1
+	!cutcontrol,crplimit,30,1
+    outres,all,all
+    solve
+    laststop=times(ii)
+*enddo
+
+!=========================== end of creep ============================
+
+!/eof
+
+
+save
+finish
+
+

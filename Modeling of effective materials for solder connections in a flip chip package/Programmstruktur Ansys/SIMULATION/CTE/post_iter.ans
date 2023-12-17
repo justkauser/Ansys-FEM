@@ -1,0 +1,112 @@
+
+!********************************************************************************************************************
+! post processing
+!********************************************************************************************************************
+/post1
+
+  fn_path   = 'OUTPUT/'
+  sim_name  = strcat(SimuProcess,'/')
+  geo_name  = strcat(strcat('SJM',CHRVAL(Solder_prop)),'/')
+  uf_name   = strcat(uf_material,'/')
+  file_name = 'CTE'
+  
+  fn_path = strcat(fn_path,sim_name)
+  fn_path = strcat(fn_path,geo_name)
+  fn_path = strcat(fn_path,uf_name)
+  fn_path = strcat(fn_path,file_name)
+  
+  fn_params = strcat('programmintern/parameters',strcounter)
+
+  parsav,all,fn_params,'txt'
+  !parsav,all,parameters,txt
+
+*do,n,1,cexp,1  !cexp: no of exponentials steps  = number of load steps  
+    set,n  !set loadstep
+
+
+
+    plnsol,S,y ! Stress in Y-Richtung in Ansys zeigen
+
+
+    !========= Strain =====================
+  
+
+	
+	EC =1
+	
+    *del,Elex 									!deleted if defined
+    *del,Eley
+    *del,Elez
+    *del,Elexth 									
+    *del,Eleyth
+    *del,Elezth
+    *del,Elux1
+	*del,Eluy1
+	*del,Elvolu
+	*del,ux_test
+	*del,disp
+
+    *dim,Elex,array,EC 							!Neudefinieren
+    *dim,Eley,array,EC
+    *dim,Elez,array,EC
+    *dim,Elexth,array,EC 							
+    *dim,Eleyth,array,EC
+    *dim,Elezth,array,EC
+	*dim,Elux1,array,EC
+	*dim,Eluy1,array,EC
+    *dim,Elvolu,array,EC
+	*dim,ux_test,array,EC
+	!*dim,id_node,array,EC
+
+		
+		
+		
+	alls
+	nsel,s,loc,x,a_c
+	nsel,r,loc,y,b_c
+	nsel,r,loc,z,d_c 
+	
+	*get,id_node,NODE,,num,min
+	*vget,Elex,NODE,id_node,epel,X
+	*vget,Eley,NODE,id_node,epel,y
+	*vget,Elez,NODE,id_node,epel,z
+	*vget,Elexth,NODE,id_node,epth,X
+	*vget,Eleyth,NODE,id_node,epth,y
+	*vget,Elezth,NODE,id_node,epth,z
+	*vget,Elux1,NODE,id_node,U,X
+	*vget,Eluy1,NODE,id_node,U,Y
+	*vget,Eluz1,NODE,id_node,U,Z
+
+
+	
+	
+
+   
+
+    *IF,n,eq,1,then
+ 	    *cfopen,fn_path,'txt', ,
+ 	    *vwrite,'Eps N1'
+        (T1,1x,A)
+        *vwrite, 'Temp', 'ex', 'ey', 'ez', 'ex_th', 'ey_th', 'ez_th', 'ux(N1)', 'uy(N1)', 'uz(N1)'
+        (T4,1x,A,T16,1x,A,T28,1x,A,T40,1x,A,T52,1x,A,T64,1x,A,T76,1x,A,T88,1x,A,T100,1x,A,T112,1x,A)
+    *ELSE
+ 	    *cfopen,fn_path,'txt', ,append
+    *endif
+
+
+                  !write results
+	!*vwrite,'Eps N2'
+     !   (T1,1x,A)
+    *vwrite,temps(n), Elex(1),Eley(1),Elez(1),Elexth(1),Eleyth(1),Elezth(1),Elux1(1),Eluy1(1),Eluz1(1)
+    (F11.1,1x,E11.4,1x,E11.4,1x,E11.4,1x,E11.4,1x,E11.4,1x,E11.4,1x,E15.8,1x,E15.8,1x,E15.8)
+    *CFCLOS
+
+    alls
+
+
+	
+*enddo
+! uzs
+finish
+! uzs
+

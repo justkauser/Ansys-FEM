@@ -1,0 +1,24 @@
+savefolder_name = 'BACKUP_DATEN_ANSYS/'
+ sim_name  = strcat(SimuProcess,'/')
+  jm_name   = strcat(Geometrie_Joint,'/')
+  geo_name  = strcat(strcat('SJM',CHRVAL(Solder_prop)),'/')
+  uf_name   = strcat(uf_material,'/')
+  file_name = 'file'
+  
+  savefolder_name = strcat(savefolder_name,sim_name)
+  savefolder_name = strcat(savefolder_name,jm_name)
+  savefolder_name = strcat(savefolder_name,geo_name)
+  savefolder_name = strcat(savefolder_name,uf_name)
+  savefolder_name = strcat(savefolder_name,file_name)
+  
+/COPY,file,db,,savefolder_name,db 
+/COPY,file,esav,,savefolder_name,esav 
+/COPY,file,full,,savefolder_name,full 
+/COPY,file,rst,,savefolder_name,rst 
+/COPY,file,r001,,savefolder_name,r001 
+/COPY,file,mntr,,savefolder_name,mntr 
+/COPY,file,DSP,,savefolder_name,DSP 
+/COPY,file,stat,,savefolder_name,stat 
+/COPY,file,ldhi,,savefolder_name,ldhi 
+/COPY,file,rdb,,savefolder_name,rdb 
+/COPY,file,dbb,,savefolder_name,dbb 

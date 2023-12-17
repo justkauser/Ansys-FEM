@@ -1,0 +1,149 @@
+*if,SimuProcess,EQ,'Mesh',then !/////////////////////////////////////MESHING//////////////////////////////////////////////////////////
+
+*if,Geometrie_Joint,EQ,'SJM',then
+
+/input,GEOMETRIE/unitecell_viertelmodell,mac
+
+*elseif,Geometrie_Joint,EQ,'MJM',then
+
+/input,GEOMETRIE/stripemodel_5B,mac
+
+*elseif,Geometrie_Joint,EQ,'effMJM',then
+
+/input,GEOMETRIE/stripemodel_5B_EM,mac
+
+*endif
+
+*elseif,SimuProcess,EQ,'STUTT',then !//////////////////////////////Static Uniaxial Tensile Test//////////////////////////////////////////////////////////////////
+VE_out = 1
+/input,SIMULATION/STUTT/init_params_iter,ans
+
+PARSAV, ALL, 'programmintern/init_params', 'txt'  ! save init params (arrays)
+*DO, runcounter, 1, max_runcount, 1
+  strcounter = CHRVAL(runcounter)   ! only for use as string later
+/input,SIMULATION/STUTT/model_iter_x,ans
+/input,SIMULATION/STUTT/post_iter,ans
+ PARSAV, , 'programmintern/runcounter', 'txt'     ! save params incl runcounter but without arrays
+  save                              ! saves model into database .db
+  fini                              ! stops/returns current processor
+  /clear,start                      ! clear database incl all params
+  PARRES, NEW, 'programmintern/init_params', 'txt' ! restore init params
+  PARRES, CHANGE, 'programmintern/runcounter', 'txt'    
+*ENDDO
+
+runcounter = 1
+
+PARSAV, ALL, 'programmintern/init_params', 'txt'  ! save init params (arrays)
+*DO, runcounter, 1, max_runcount, 1
+  strcounter = CHRVAL(runcounter)   ! only for use as string later
+/input,SIMULATION/STUTT/model_iter_y,ans
+/input,SIMULATION/STUTT/post_iter,ans
+ PARSAV, , 'programmintern/runcounter', 'txt'     ! save params incl runcounter but without arrays
+  save                              ! saves model into database .db
+  fini                              ! stops/returns current processor
+  /clear,start                      ! clear database incl all params
+  PARRES, NEW, 'programmintern/init_params', 'txt' ! restore init params
+  PARRES, CHANGE, 'programmintern/runcounter', 'txt'    
+*ENDDO
+
+runcounter = 1
+
+PARSAV, ALL, 'programmintern/init_params', 'txt'  ! save init params (arrays)
+*DO, runcounter, 1, max_runcount, 1
+  strcounter = CHRVAL(runcounter)   ! only for use as string later
+/input,SIMULATION/STUTT/model_iter_z,ans
+/input,SIMULATION/STUTT/post_iter,ans
+ PARSAV, , 'programmintern/runcounter', 'txt'     ! save params incl runcounter but without arrays
+  save                              ! saves model into database .db
+  fini                              ! stops/returns current processor
+  /clear,start                      ! clear database incl all params
+  PARRES, NEW, 'programmintern/init_params', 'txt' ! restore init params
+  PARRES, CHANGE, 'programmintern/runcounter', 'txt'    
+*ENDDO
+
+
+*elseif,SimuProcess,EQ,'CTE',then !//////////////////////////////Static CTE-Test//////////////////////////////////////////////////////////////////
+
+/input,SIMULATION/CTE/init_params_iter,ans
+VE_out = 1
+PARSAV, ALL, 'programmintern/init_params', 'txt'  ! save init params (arrays)
+*DO, runcounter, 1, max_runcount, 1
+  strcounter = CHRVAL(runcounter)   ! only for use as string later
+/input,SIMULATION/CTE/model_iter,ans
+/input,SIMULATION/CTE/post_iter,ans
+ PARSAV, , 'programmintern/runcounter', 'txt'     ! save params incl runcounter but without arrays
+  save                              ! saves model into database .db
+  fini                              ! stops/returns current processor
+  /clear,start                      ! clear database incl all params
+  PARRES, NEW, 'programmintern/init_params', 'txt' ! restore init params
+  PARRES, CHANGE, 'programmintern/runcounter', 'txt'    
+*ENDDO
+
+
+*elseif,SimuProcess,EQ,'Creep',then !//////////////////////////////Creep test at SJM//////////////////////////////////////////////////////////////////
+
+/input,SIMULATION/Creep/init_params_iter,ans
+
+
+PARSAV, ALL, 'programmintern/init_params', 'txt'  ! save init params (arrays)
+*DO, runcounter, 1, max_runcount, 1
+  strcounter = CHRVAL(runcounter)   ! only for use as string later
+/input,SIMULATION/Creep/model_iter_y,ans
+/input,SIMULATION/Creep/post_iter,ans
+ PARSAV, , 'programmintern/runcounter', 'txt'     ! save params incl runcounter but without arrays
+  save                              ! saves model into database .db
+  fini                              ! stops/returns current processor
+  /clear,start                      ! clear database incl all params
+  PARRES, NEW, 'programmintern/init_params', 'txt' ! restore init params
+  PARRES, CHANGE, 'programmintern/runcounter', 'txt'    
+*ENDDO
+
+
+
+PARSAV, ALL, 'programmintern/init_params', 'txt'  ! save init params (arrays)
+*DO, runcounter, 1, max_runcount, 1
+  strcounter = CHRVAL(runcounter)   ! only for use as string later
+/input,SIMULATION/Creep/model_iter_z,ans
+/input,SIMULATION/Creep/post_iter,ans
+ PARSAV, , 'programmintern/runcounter', 'txt'     ! save params incl runcounter but without arrays
+  save                              ! saves model into database .db
+  fini                              ! stops/returns current processor
+  /clear,start                      ! clear database incl all params
+  PARRES, NEW, 'programmintern/init_params', 'txt' ! restore init params
+  PARRES, CHANGE, 'programmintern/runcounter', 'txt'    
+*ENDDO
+
+*elseif,SimuProcess,EQ,'TCT',then !//////////////////////////////Benchmark Test: TCT MJM vs. effMJM//////////////////////////////////////////////////////////////////
+
+/input,COMPARE/init_params_iter,ans  !iteration initialization
+runcounter = 1
+
+
+/input,SIMULATION/TCT/model_iter,ans
+/input,SIMULATION/TCT/soldern_150C,ans 
+!/input,SIMULATION/TCT/soldern_150C_14Tage_Relaxionszeit,ans
+!/input,SIMULATION/TCT/soldern_150C_1Jahr_Relaxionszeit,ans
+
+/input,SIMULATION/TCT/thermal_cycle_JESD22_A104,ans
+
+save
+finish
+
+/input,SIMULATION/TCT/copy_data,ans
+/input,SIMULATION/TCT/post_iter,ans
+
+save
+finish
+
+
+
+*endif
+
+
+
+
+
+
+
+
+

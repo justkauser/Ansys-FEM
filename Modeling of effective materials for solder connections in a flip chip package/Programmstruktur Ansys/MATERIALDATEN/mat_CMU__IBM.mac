@@ -1,0 +1,139 @@
+!   Commands inserted into this file will be executed just prior to the ANSYS SOLVE command.
+!   These commands may supersede command settings set by Workbench.
+
+!   Active UNIT system in Workbench when this object was created:  Metric (mm, t, N, s, mV, mA)
+!   NOTE:  Any data that requires units (such as mass) is assumed to be in the consistent solver unit system.
+!                See Solving Units in the help system for more information.
+
+
+! ARGUMENTS OF THE MACRO
+!************************
+MatID = ARG1			! Material Number
+
+!MPDELE, all,1,4999
+
+mod_shift=2
+
+EMODIF,all,mat,MatID
+
+T_RT=273.15
+
+TG_temp=89.9+T_RT
+
+ctex_below_TG=28.3e-6
+ctex_above_TG=90.9e-6
+
+ctey_below_TG=28.3e-6
+ctey_above_TG=90.9e-6
+
+ctez_below_TG=28.3e-6
+ctez_above_TG=90.9e-6
+
+MPTEMP												! erases any preceding temp table
+MPTEMP,     1,  200,TG_temp-5, TG_temp+5,1000							! specify T-values for mat 
+MPDATA,ctex,MatID,1,ctex_below_TG,ctex_below_TG,ctex_above_TG,ctex_above_TG		! corresponding CTE
+MPDATA,ctey,MatID,1,ctey_below_TG,ctey_below_TG,ctey_above_TG,ctey_above_TG
+MPDATA,ctez,MatID,1,ctez_below_TG,ctez_below_TG,ctez_above_TG,ctez_above_TG
+
+!Polyfit by A(T) = a1*(T-Tr) + a2*(T-Tr)^2 + ...
+Tref_Poly = 370.99
+anz_poly=  8.00
+!range of validity: 293.85 Kelvin to	417.81 Kelvin
+!these values have the highest accuracy
+!Values in natural logarithm! use these values /2.3025850929940456840179914546844 (/log(10)) for decadic logarithm
+a1=4.82275942294e-01      ! (t-tref)^1+
+a2=-1.04930586603e-03      ! (t-tref)^2+
+a3=-6.64600666278e-05      ! (t-tref)^3+
+a4=2.67721690408e-07      ! (t-tref)^4+
+a5=2.65798719630e-08      ! (t-tref)^5+
+a6=-5.41481509597e-11      ! (t-tref)^6+
+a7=-8.19667841289e-12      ! (t-tref)^7+
+a8=-5.93139904700e-14      ! (t-tref)^8+
+a0=-1.72050949920e-14       ! (t-tref)^0     (should be zero)
+
+!range of validity: 193.85 Kelvin to	517.81 Kelvin
+!these values have a little less accuracy because of the extrapolation
+b1=4.84266111430e-01      ! (t-tref)^1+
+b2=-1.27315685025e-03      ! (t-tref)^2+
+b3=-5.42732398987e-05      ! (t-tref)^3+
+b4=-6.36121013479e-08      ! (t-tref)^4+
+b5=3.94221796745e-09      ! (t-tref)^5+
+b6=1.47518069154e-11      ! (t-tref)^6+
+b7=-9.71399412761e-14      ! (t-tref)^7+
+b8=-4.70129961589e-16      ! (t-tref)^8+
+b9=-9.39334848243e-15       ! (t-tref)^0     (should be zero)
+
+ prxy=0.35
+ emodul_X=11584.9258
+ emodul_unendlich=126.7255
+ anz_pr=20
+ prony1=3.3398659314671508e-02 $prony_sh1=3.9038946506297446e-14
+ prony2=3.2476257652690195e-02 $prony_sh2=4.3276437088188502e-13
+ prony3=3.6102279445588456e-02 $prony_sh3=4.7973886968128518e-12
+ prony4=4.5583415580559478e-02 $prony_sh4=5.3181222523952438e-11
+ prony5=4.1109548171996461e-02 $prony_sh5=5.8953789402578332e-10
+ prony6=5.5637254450606265e-02 $prony_sh6=6.5352940755699648e-09
+ prony7=6.0615770771006917e-02 $prony_sh7=7.2446689325643336e-08
+ prony8=5.4714968491111855e-02 $prony_sh8=8.0310430312021285e-07
+ prony9=6.0456702858163368e-02 $prony_sh9=8.9027742702096116e-06
+ prony10=5.6949738326173886e-02 $prony_sh10=9.8691277581714268e-05
+ prony11=7.7483854417340389e-02 $prony_sh11=1.0940374286813872e-03
+ prony12=9.2779624086933327e-02 $prony_sh12=1.2127899493091057e-02
+ prony13=9.9938545199565229e-02 $prony_sh13=1.3444324870292373e-01
+ prony14=1.0883030933066239e-01 $prony_sh14=1.4903641914325763e+00
+ prony15=7.0710625068024904e-02 $prony_sh15=1.6521360830937393e+01
+ prony16=3.5430636131907993e-02 $prony_sh16=1.8314675384387948e+02
+ prony17=1.9005648938590143e-02 $prony_sh17=2.0302645639661614e+03
+ prony18=5.2754056427092690e-03 $prony_sh18=2.2506400540467133e+04
+ prony19=1.2259647124515834e-03 $prony_sh19=2.4949362476110374e+05
+ prony20=1.3359657058511865e-03 $prony_sh20=2.7657496224023895e+06
+
+ 
+
+ mp,ex,MatID, emodul_X
+ mp,nuxy,MatID,prxy
+ 
+ *if,VE_out,NE,1,then
+
+ *dim,prony_pairs,array,anz_pr,2
+ *do,i,1,anz_pr,1
+    prony_pairs(i,1)=prony%i%
+    prony_pairs(i,2)=prony_sh%i%
+ *enddo
+
+ TB,PRONY,MatID,1,anz_pr,SHEAR
+ *do,i,1,anz_pr,1
+  	TBDATA,2*i-1,prony_pairs(i,1),prony_pairs(i,2)
+ *enddo
+
+ !TB,PRONY,MatID,1,anz_pr,BULK
+ !*do,i,1,anz_pr,1
+ ! 	TBDATA,2*i-1,prony_pairs(i,1),prony_pairs(i,2)
+ !*enddo
+
+!TB,PRONY,MatID,1,anz_pr,BULK
+! *do,i,1,anz_pr,1
+!  	TBDATA,2*i-1,prony_pairs(i,1),0
+! *enddo
+
+
+ !*do,i,1,anz_pr,1
+ *dim,poly_shift,array,anz_poly,1
+ *do,i,1,anz_poly,1
+ 	poly_shift(i,1)=b%i% 		!change here the a to b for the extrapolation values
+ *enddo
+
+ mod_shift=2
+ *IF,mod_shift,eq,1,then
+ 	tb,shift,MatID,1,3,WLF		! Use WLF shift function
+ 	tbdata,1,WLF_Tref,WLF_C1,WLF_C2  ! Parameter of WLF Fct.
+ *ELSEIF,mod_shift,eq,2,then
+ 	tb,shift,MatID,1,anz_poly+1,user		! Use poly shift function Poly 8 fit with Ax(T-Tref)^X
+    tbdata,1,Tref_Poly
+         *do,j,1,anz_poly,1
+         	tbdata,j+1,poly_shift(j,1)
+         *enddo
+ *endif
+
+*endif
+

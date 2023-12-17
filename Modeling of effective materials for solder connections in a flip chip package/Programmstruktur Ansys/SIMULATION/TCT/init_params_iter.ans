@@ -1,0 +1,4 @@
+max_runcount = 1     ! number og iterations/runs, 
+*dim,ats_iter,array,max_runcount
+*set,ats_iter(1),10!,25 !200,100,50,25,10
+!#################################################################################################

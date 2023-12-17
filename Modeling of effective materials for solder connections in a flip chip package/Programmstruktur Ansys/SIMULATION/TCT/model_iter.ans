@@ -1,0 +1,76 @@
+finish
+
+! uzs
+  !/clear
+! uzs
+
+!*************************************************************************
+! specified variables to geometry
+
+
+
+T_0=273.15
+T_RT=T_0+25
+
+
+*if,Geometrie_Joint,EQ,'MJM',then
+
+/input,GEOMETRIE/stripemodel_5B,mac
+
+*elseif,Geometrie_Joint,EQ,'effMJM',then
+
+/input,GEOMETRIE/stripemodel_5B_EM,mac
+
+*endif
+
+!********************************************************************************************************************
+! -- Enter solution processor:
+!********************************************************************************************************************
+/solu
+
+
+/input,GEOMETRIE/BC_MJM,ans 
+
+
+
+
+! --------------------------------------------------------
+!-- specify type of solution:
+
+antype,static,new	! transient solution for new analysis
+
+! Set initial conditions:
+
+toffst,0
+tref,T0+150
+tunif,T0+150
+! -----------------------------------------------------------
+! set solution characteristics
+
+autots,on
+rate,on
+timint,off
+
+! -----------------------------------------------------------
+! specify output written to file.rst
+
+outres,nsol,last
+outres,esol,last
+
+
+
+nropt,full   		! explicitly set the Newton-Raphson option
+ats =  10 !ats_iter(runcounter) / 50
+var_cl = 10
+loadstepcounter = 0
+tm = 0
+alls
+
+
+
+
+!=========================== end ============================
+
+
+
+

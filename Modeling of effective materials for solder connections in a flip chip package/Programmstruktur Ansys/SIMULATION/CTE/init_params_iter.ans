@@ -1,0 +1,4 @@
+max_runcount = 1    ! number og iterations/runs, 
+*dim,temps_iter,array,max_runcount
+*set,temps_iter(1),50 !100,0,89.9,95,84 !70,80,85,88,100 ! 
+!#################################################################################################
